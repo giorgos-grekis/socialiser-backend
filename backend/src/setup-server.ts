@@ -5,12 +5,14 @@ import hpp from "hpp";
 import compression from "compression";
 import cookieSession from "cookie-session";
 import HTTP_STATUS from "http-status-codes";
+import http from "http";
 
 import "express-async-errors";
 
 // import types
 import { type Application } from "express";
-import { type Server } from "http";
+
+const SERVER_PORT = 5000;
 
 export class SocialiserServer {
   //   private app: Application;
@@ -62,9 +64,20 @@ export class SocialiserServer {
 
   private globalErrorHandler(app: Application): void {}
 
-  private startServer(app: Application): void {}
+  private async startServer(app: Application): Promise<void> {
+    try {
+      const httpServer: http.Server = new http.Server(app);
+      this.startHttpServer(httpServer);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
-  private createSocketIO(httpServer: Server): void {}
+  private createSocketIO(httpServer: http.Server): void {}
 
-  private startHttpServer(httpServer: Server): void {}
+  private startHttpServer(httpServer: http.Server): void {
+    httpServer.listen(SERVER_PORT, () => {
+      console.log(`Server running on port ${SERVER_PORT}`);
+    });
+  }
 }
