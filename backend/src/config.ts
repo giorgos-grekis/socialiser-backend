@@ -13,6 +13,7 @@ class Config {
   public SECRET_KEY_TWO: EnvTypes;
   public CLIENT_URL: EnvTypes;
   public SERVER_PORT: EnvTypes;
+  public REDIS_HOST: EnvTypes;
 
   private readonly DEFAULT_DATABASE_URL =
     "mongodb://localhost:27017/socialiser";
@@ -25,6 +26,7 @@ class Config {
     this.SECRET_KEY_TWO = process.env.SECRET_KEY_TWO ?? "";
     this.CLIENT_URL = process.env.CLIENT_URL ?? "";
     this.SERVER_PORT = process.env.SERVER_PORT ?? "5000";
+    this.REDIS_HOST = process.env.REDIS_HOST ?? "";
   }
 
   public validateConfig(): void {
