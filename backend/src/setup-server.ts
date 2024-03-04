@@ -1,4 +1,4 @@
-import { json, urlencoded, Response, Request, NextFunction } from "express";
+import { json, urlencoded } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import hpp from "hpp";
@@ -9,12 +9,15 @@ import http from "http";
 import { createClient } from "redis";
 import { Server } from "socket.io";
 import { createAdapter } from "@socket.io/redis-adapter";
+import applicationRoutes from "./routes";
 import { config } from "./config";
+import { CustomError } from "./shared/global/helpers/error-handler";
 
 import "express-async-errors";
 
 // import types
-import { type Application } from "express";
+import type { Application, Response, Request, NextFunction } from "express";
+import { type IErrorResponse } from "./shared/global/helpers/error-handler";
 
 const SERVER_PORT = 5000;
 
@@ -64,9 +67,33 @@ export class SocialiserServer {
     app.use(urlencoded({ extended: true, limit: "50mb" }));
   }
 
-  private routesMiddleware(app: Application): void {}
+  private routesMiddleware(app: Application): void {
+    applicationRoutes(app);
+  }
 
-  private globalErrorHandler(app: Application): void {}
+  private globalErrorHandler(app: Application): void {
+    // to catch errors related to urls that are not available
+    app.all("*", (req: Request, res: Response) => {
+      res
+        .status(HTTP_STATUS.NOT_FOUND)
+        .json({ message: `${req.originalUrl} not found` });
+    });
+
+    app.use(
+      (
+        error: IErrorResponse,
+        _req: Request,
+        res: Response,
+        next: NextFunction
+      ) => {
+        console.error(error);
+        if (error instanceof CustomError) {
+          return res.status(error.statusCode).json(error.serializeErrors());
+        }
+        next();
+      }
+    );
+  }
 
   private async startServer(app: Application): Promise<void> {
     try {
