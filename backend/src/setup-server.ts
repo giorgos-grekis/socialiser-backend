@@ -6,6 +6,7 @@ import compression from "compression";
 import cookieSession from "cookie-session";
 import HTTP_STATUS from "http-status-codes";
 import http from "http";
+import { config } from "./config";
 
 import "express-async-errors";
 
@@ -33,16 +34,16 @@ export class SocialiserServer {
     app.use(
       cookieSession({
         name: "session",
-        keys: ["test1", "test2"],
+        keys: [config.SECRET_KEY_ONE!, config.SECRET_KEY_TWO!],
         maxAge: 24 * 7 * 3600,
-        secure: false,
+        secure: config.NODE_ENV !== 'development',
       })
     );
     app.use(hpp());
     app.use(helmet());
     app.use(
       cors({
-        origin: "*",
+        origin: config.CLIENT_URL,
         credentials: true,
         optionsSuccessStatus: 200,
         methods: ["GETS", "POST", "PUT", "DELETE", "OPTIONS"],
