@@ -10,6 +10,7 @@ import { createClient } from "redis";
 import { Server } from "socket.io";
 import { createAdapter } from "@socket.io/redis-adapter";
 import applicationRoutes from "./routes";
+import Logger from "bunyan";
 import { config } from "./config";
 import { CustomError } from "./shared/global/helpers/error-handler";
 
@@ -20,6 +21,7 @@ import type { Application, Response, Request, NextFunction } from "express";
 import { type IErrorResponse } from "./shared/global/helpers/error-handler";
 
 const SERVER_PORT = 5000;
+const log: Logger = config.createLogger("server");
 
 export class SocialiserServer {
   //   private app: Application;
@@ -86,7 +88,7 @@ export class SocialiserServer {
         res: Response,
         next: NextFunction
       ) => {
-        console.error(error);
+        log.error(error);
         if (error instanceof CustomError) {
           return res.status(error.statusCode).json(error.serializeErrors());
         }
@@ -102,7 +104,7 @@ export class SocialiserServer {
       this.startHttpServer(httpServer);
       this.socketIOConnections(socketIO);
     } catch (error) {
-      console.error(error);
+      log.error(error);
     }
   }
 
@@ -122,9 +124,9 @@ export class SocialiserServer {
   }
 
   private startHttpServer(httpServer: http.Server): void {
-    console.log(`Server has started with process ${process.pid}`);
+    log.info(`Server has started with process ${process.pid}`);
     httpServer.listen(SERVER_PORT, () => {
-      console.log(`Server running on port ${SERVER_PORT}`);
+      log.info(`Server running on port ${SERVER_PORT}`);
     });
   }
 

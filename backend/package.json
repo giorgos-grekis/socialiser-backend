@@ -4,13 +4,14 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "dev": "nodemon -r tsconfig-paths/register src/main.ts",
+    "dev": "nodemon -r tsconfig-paths/register src/main.ts | ./node_modules/.bin/bunyan",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/bunyan": "^1.8.11",
     "@types/compression": "^1.7.5",
     "@types/cookie-session": "^2.0.48",
     "@types/cors": "^2.8.17",
@@ -24,6 +25,7 @@
   },
   "dependencies": {
     "@socket.io/redis-adapter": "^8.2.1",
+    "bunyan": "^1.8.15",
     "compression": "^1.7.4",
     "cookie-session": "^2.1.0",
     "cors": "^2.8.5",
