@@ -12,6 +12,7 @@ export interface IErrorResponse {
   status: string;
   serializeErrors(): IError;
 }
+// test
 
 export abstract class CustomError extends Error {
   abstract statusCode: number;
